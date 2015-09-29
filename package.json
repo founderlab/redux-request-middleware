@@ -2,13 +2,14 @@
   "name": "redux-request-middleware",
   "version": "0.0.1",
   "description": "Middleware to dispatch Superagent or BackboneORM requests",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": {
     "name": "Gwilym Humphreys",
     "url": "https://github.com/gwilymhumphreys"
   },
   "license": "",
   "scripts": {
+    "build": "babel src --out-dir lib",
     "test": "eval $(cat test/.env) mocha test/**/*.tests.js"
   },
   "dependencies": {

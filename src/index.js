@@ -20,5 +20,4 @@ export function createRequestMiddleware(options) {
   return requestMiddleware
 }
 
-export {requestMiddleware}
-export default createRequestMiddleware
+export default {requestMiddleware}
