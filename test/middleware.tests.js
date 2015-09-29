@@ -1,9 +1,6 @@
 import assert from 'assert'
-import {reset, createRequestMiddleware} from '../index'
-
 import {spy} from 'sinon'
-
-import config from '../config'
+import {createRequestMiddleware} from '../src'
 
 const TYPE = 'ACTIONTYPE'
 
@@ -36,14 +33,12 @@ function createMiddlewareSpy() {
 
 describe('requestMiddleware', () => {
 
-  beforeEach(() => reset())
-
   it('Passes through an action without a request', () => {
     let done = createSpy()
     let action = {type: TYPE}
     let middleware = createRequestMiddleware()
     middleware()(done)(action)
-    assert.ok(done.called)
+    assert.ok(done.calledOnce)
   })
 
   it('Passes through an action with a request field that isnt a function', () => {
@@ -51,7 +46,7 @@ describe('requestMiddleware', () => {
     let action = {type: TYPE, request: 'lol'}
     let middleware = createRequestMiddleware()
     middleware()(done)(action)
-    assert.ok(done.called)
+    assert.ok(done.calledOnce)
   })
 
   it('Passes through an action with a configured request field that isnt a function', () => {
@@ -59,15 +54,11 @@ describe('requestMiddleware', () => {
     let action = {type: TYPE, req: 'lol'}
     let middleware = createRequestMiddleware({request_name: 'req'})
     middleware()(done)(action)
-    assert.ok(done.called)
+    assert.ok(done.calledOnce)
   })
 
   it('Calls a request', () => {
-    let req = {
-      end: spy((callback) => {
-        callback(null, {success: true})
-      })
-    }
+    let req = {end: spy(callback => callback(null, {success: true}))}
     let done = createMiddlewareSpy()
     let action = {type: TYPE, request: req}
 
@@ -75,15 +66,11 @@ describe('requestMiddleware', () => {
     middleware()(done)(action)
 
     assert.ok(done.calledTwice)
-    assert.ok(req.end.called)
+    assert.ok(req.end.calledOnce)
   })
 
   it('Calls a request with config', () => {
-    let req = {
-      done: spy((callback) => {
-        callback(null, {success: true})
-      })
-    }
+    let req = {done: spy(callback => callback(null, {success: true}))}
     let done = createMiddlewareSpy()
     let action = {type: TYPE, a_request: req}
 
@@ -91,15 +78,11 @@ describe('requestMiddleware', () => {
     middleware()(done)(action)
 
     assert.ok(done.calledTwice)
-    assert.ok(req.done.called)
+    assert.ok(req.done.calledOnce)
   })
 
   it('Errors correctly', () => {
-    let req = {
-      done: spy((callback) => {
-        callback(new Error('failed'))
-      })
-    }
+    let req = {done: spy(callback => callback(new Error('failed')))}
     let done = createMiddlewareSpy()
     let action = {type: TYPE, a_request: req}
 
@@ -107,7 +90,7 @@ describe('requestMiddleware', () => {
     middleware()(done)(action)
 
     assert.ok(done.calledTwice)
-    assert.ok(req.done.called)
+    assert.ok(req.done.calledOnce)
   })
 
 })
