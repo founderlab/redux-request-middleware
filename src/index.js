@@ -27,10 +27,9 @@ export function createRequestMiddleware(options={}) {
       next({type: START, ...rest})
 
       return end_method((err, res) => {
-        let error = err
-        if (!error && res && res.body) error = res.body.error
-
+        let error = err || (res && res.body ? res.body.error : null)
         if (error) return next({res, error, type: ERROR, ...rest})
+
         next({res, type: SUCCESS, ...rest})
       })
     }
