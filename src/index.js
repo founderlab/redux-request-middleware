@@ -17,6 +17,7 @@ export function createRequestMiddleware(options={}) {
         if (_.isFunction(end_method)) break
       }
       if (!end_method) return next(action)
+      end_method = end_method.bind(request)
 
       const START = type + options.suffixes.start
       const ERROR = type + options.suffixes.error
@@ -26,9 +27,10 @@ export function createRequestMiddleware(options={}) {
       next({type: START, ...rest})
 
       return end_method((err, res) => {
-        if (err) {
-          return next({res, error: err, type: ERROR, ...rest})
-        }
+        let error = err
+        if (!error && res && res.body) error = res.body.error
+
+        if (error) return next({res, error, type: ERROR, ...rest})
         next({res, type: SUCCESS, ...rest})
       })
     }

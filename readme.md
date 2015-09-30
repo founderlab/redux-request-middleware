@@ -9,7 +9,7 @@ Usage:
   import request from superagent
 
   dispatch({
-    type: 'LOAD_SOMETHING',
+    type: 'GET_SOMETHING',
     request: request.get('/something')
   }
 
@@ -19,6 +19,6 @@ Usage:
   import Task from './models/task'
 
   dispatch({
-    type: 'LOAD_TASKS',
+    type: 'GET_TASKS',
     request: Task.cursor({active: true})
   }

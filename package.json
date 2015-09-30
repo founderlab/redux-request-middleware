@@ -9,7 +9,7 @@
   },
   "license": "",
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "rm -rf lib && babel src --out-dir lib",
     "test": "eval $(cat test/.env) mocha test/**/*.tests.js"
   },
   "dependencies": {

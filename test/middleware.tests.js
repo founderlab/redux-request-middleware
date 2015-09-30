@@ -81,8 +81,20 @@ describe('requestMiddleware', () => {
     assert.ok(req.done.calledOnce)
   })
 
-  it('Errors correctly', () => {
+  it('Errors from an error callback', () => {
     let req = {done: spy(callback => callback(new Error('failed')))}
+    let done = createMiddlewareSpy()
+    let action = {type: TYPE, a_request: req}
+
+    let middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
+    middleware()(done)(action)
+
+    assert.ok(done.calledTwice)
+    assert.ok(req.done.calledOnce)
+  })
+
+  it('Errors from an error body property', () => {
+    let req = {done: spy(callback => callback(null, {body: {error: 'failed'}}))}
     let done = createMiddlewareSpy()
     let action = {type: TYPE, a_request: req}
 
