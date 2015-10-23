@@ -1,9 +1,9 @@
 export default {
   methods: ['toJSON', 'end'],
   suffixes: {
-    start: '_START',
-    error: '_ERROR',
-    success: '_SUCCESS',
+    START: '_START',
+    ERROR: '_ERROR',
+    SUCCESS: '_SUCCESS',
   },
   request_name: 'request',
 }

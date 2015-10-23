@@ -1,7 +1,9 @@
 import assert from 'assert'
 import {spy} from 'sinon'
 import {createRequestMiddleware} from '../src'
+import config from '../src/config'
 
+const suffixes = config.suffixes
 const TYPE = 'ACTIONTYPE'
 
 function createSpy() {
@@ -16,15 +18,15 @@ function createMiddlewareSpy() {
     assert.ok(action)
 
     if (spy_fn.calledOnce) {
-      assert.ok(action.type === TYPE+'_START')
+      assert.ok(action.type === TYPE + suffixes.START)
     }
     else if (spy_fn.calledTwice) {
       if (action.error) {
-        assert.ok(action.type === TYPE+'_ERROR')
+        assert.ok(action.type === TYPE + suffixes.ERROR)
       }
       else {
         assert.ok(action.res)
-        assert.ok(action.type === TYPE+'_SUCCESS')
+        assert.ok(action.type === TYPE + suffixes.SUCCESS)
       }
     }
   })

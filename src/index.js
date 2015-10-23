@@ -19,9 +19,9 @@ export function createRequestMiddleware(options={}) {
       if (!end_method) return next(action)
       end_method = end_method.bind(request)
 
-      const START = type + options.suffixes.start
-      const ERROR = type + options.suffixes.error
-      const SUCCESS = type + options.suffixes.success
+      const START = type + options.suffixes.START
+      const ERROR = type + options.suffixes.ERROR
+      const SUCCESS = type + options.suffixes.SUCCESS
       delete rest[options.request_name]
 
       next({type: START, ...rest})
