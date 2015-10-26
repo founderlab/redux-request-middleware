@@ -1,9 +1,12 @@
 import assert from 'assert'
 import {spy} from 'sinon'
 import {createRequestMiddleware} from '../src'
-import config from '../src/config'
 
-const suffixes = config.suffixes
+const suffixes = {
+  START: '_START',
+  ERROR: '_ERROR',
+  SUCCESS: '_SUCCESS',
+}
 const TYPE = 'ACTIONTYPE'
 
 function createSpy() {
@@ -76,7 +79,13 @@ describe('requestMiddleware', () => {
     const done = createMiddlewareSpy()
     const action = {type: TYPE, a_request: req}
 
-    const middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
+    const extractRequest = (action) => {
+      const {a_request, ...rest} = action
+      return {request: a_request, action: rest}
+    }
+    const getEndFn = request => request.done.bind(request)
+
+    const middleware = createRequestMiddleware({extractRequest, getEndFn})
     middleware()(done)(action)
 
     assert.ok(done.calledTwice)
