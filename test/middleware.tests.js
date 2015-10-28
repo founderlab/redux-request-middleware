@@ -74,6 +74,20 @@ describe('requestMiddleware', () => {
     assert.ok(req.end.calledOnce)
   })
 
+  it('Calls a request then calls a callback', () => {
+    const req = {end: spy(callback => callback(null, {success: true}))}
+    const done = createMiddlewareSpy()
+    const callback = spy(err => assert.ok(!err))
+    const action = {callback, type: TYPE, request: req}
+
+    const middleware = createRequestMiddleware()
+    middleware()(done)(action)
+
+    assert.ok(done.calledTwice)
+    assert.ok(callback.calledOnce)
+    assert.ok(req.end.calledOnce)
+  })
+
   it('Calls a request with config', () => {
     const req = {done: spy(callback => callback(null, {success: true}))}
     const done = createMiddlewareSpy()
