@@ -24,7 +24,7 @@ function createMiddlewareSpy() {
       assert.ok(action.type === TYPE + suffixes.START)
     }
     else if (spy_fn.calledTwice) {
-      if (action.error) {
+      if (action.error || !action.res || !action.res.ok) {
         assert.ok(action.type === TYPE + suffixes.ERROR)
       }
       else {
@@ -63,7 +63,7 @@ describe('requestMiddleware', () => {
   })
 
   it('Calls a request', () => {
-    const req = {end: spy(callback => callback(null, {success: true}))}
+    const req = {end: spy(callback => callback(null, {ok: true}))}
     const done = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
@@ -75,9 +75,9 @@ describe('requestMiddleware', () => {
   })
 
   it('Calls a request then calls a callback', () => {
-    const req = {end: spy(callback => callback(null, {success: true}))}
+    const req = {end: spy(callback => callback(null, {ok: true}))}
     const done = createMiddlewareSpy()
-    const callback = spy(err => assert.ok(!err))
+    const callback = spy(err => {assert.ok(!err)})
     const action = {callback, type: TYPE, request: req}
 
     const middleware = createRequestMiddleware()
@@ -89,7 +89,7 @@ describe('requestMiddleware', () => {
   })
 
   it('Calls a request with config', () => {
-    const req = {done: spy(callback => callback(null, {success: true}))}
+    const req = {done: spy(callback => callback(null, {ok: true}))}
     const done = createMiddlewareSpy()
     const action = {type: TYPE, a_request: req}
 
@@ -124,6 +124,18 @@ describe('requestMiddleware', () => {
     const action = {type: TYPE, a_request: req}
 
     const middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
+    middleware()(done)(action)
+
+    assert.ok(done.calledTwice)
+    assert.ok(req.done.calledOnce)
+  })
+
+  it('Errors from a bad status', () => {
+    let req = {done: spy(callback => callback(null, {ok: false, body: 'some stack trace'}))}
+    let done = createMiddlewareSpy()
+    let action = {type: TYPE, a_request: req}
+
+    let middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
     middleware()(done)(action)
 
     assert.ok(done.calledTwice)

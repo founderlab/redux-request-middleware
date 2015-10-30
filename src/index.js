@@ -19,7 +19,7 @@ export function getEndFn(request) {
 const defaults = {
   extractRequest,
   getEndFn,
-  getError: res => res && res.body ? res.body.error : null,
+  getError: res => res && res.body ? res.body.error || (!res.ok ? res.body : null) : null,
   suffixes: {
     START: '_START',
     ERROR: '_ERROR',
