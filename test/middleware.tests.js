@@ -17,13 +17,13 @@ function createSpy() {
 }
 
 function createMiddlewareSpy() {
-  const spy_fn = spy(action => {
+  const next_fn = spy(action => {
     assert.ok(action)
 
-    if (spy_fn.calledOnce) {
+    if (next_fn.calledOnce) {
       assert.ok(action.type === TYPE + suffixes.START)
     }
-    else if (spy_fn.calledTwice) {
+    else if (next_fn.calledTwice) {
       if (action.error || !action.res || !action.res.ok) {
         assert.ok(action.type === TYPE + suffixes.ERROR)
       }
@@ -33,113 +33,130 @@ function createMiddlewareSpy() {
       }
     }
   })
-  return spy_fn
+  return next_fn
 }
 
 describe('requestMiddleware', () => {
 
   it('Passes through an action without a request', () => {
-    const done = createSpy()
+    const next = createSpy()
     const action = {type: TYPE}
     const middleware = createRequestMiddleware()
-    middleware()(done)(action)
-    assert.ok(done.calledOnce)
+    middleware()(next)(action)
+    assert.ok(next.calledOnce)
   })
 
   it('Passes through an action with a request field that isnt a function', () => {
-    const done = createSpy()
+    const next = createSpy()
     const action = {type: TYPE, request: 'lol'}
     const middleware = createRequestMiddleware()
-    middleware()(done)(action)
-    assert.ok(done.calledOnce)
+    middleware()(next)(action)
+    assert.ok(next.calledOnce)
   })
 
-  it('Passes through an action with a configured request field that isnt a function', () => {
-    const done = createSpy()
-    const action = {type: TYPE, req: 'lol'}
-    const middleware = createRequestMiddleware({request_name: 'req'})
-    middleware()(done)(action)
-    assert.ok(done.calledOnce)
+  it('Passes through an action with a custom extractRequest method that isnt a function', () => {
+    const next = createSpy()
+    const action = {type: TYPE, req: 'lol', request: function() {} }
+    const middleware = createRequestMiddleware({
+      extractRequest: action => {
+        const {req, callback, ...rest} = action
+        return {request: req, callback, action: rest}
+      }
+    })
+    middleware()(next)(action)
+    assert.ok(next.calledOnce)
   })
 
   it('Calls a request', () => {
     const req = {end: spy(callback => callback(null, {ok: true}))}
-    const done = createMiddlewareSpy()
+    const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
     const middleware = createRequestMiddleware()
-    middleware()(done)(action)
+    middleware()(next)(action)
 
-    assert.ok(done.calledTwice)
+    assert.ok(next.calledTwice)
     assert.ok(req.end.calledOnce)
+  })
+
+  it('Calls a pure function request', () => {
+    const req = spy(callback => callback(null, {ok: true}))
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
+
+    const middleware = createRequestMiddleware()
+    middleware()(next)(action)
+
+    assert.ok(next.calledTwice)
+    assert.ok(req.calledOnce)
   })
 
   it('Calls a request then calls a callback', () => {
     const req = {end: spy(callback => callback(null, {ok: true}))}
-    const done = createMiddlewareSpy()
+    const next = createMiddlewareSpy()
     const callback = spy(err => {assert.ok(!err)})
     const action = {callback, type: TYPE, request: req}
 
     const middleware = createRequestMiddleware()
-    middleware()(done)(action)
+    middleware()(next)(action)
 
-    assert.ok(done.calledTwice)
+    assert.ok(next.calledTwice)
     assert.ok(callback.calledOnce)
     assert.ok(req.end.calledOnce)
   })
 
   it('Calls a request with config', () => {
-    const req = {done: spy(callback => callback(null, {ok: true}))}
-    const done = createMiddlewareSpy()
+    const req = {next: spy(callback => callback(null, {ok: true}))}
+    const next = createMiddlewareSpy()
     const action = {type: TYPE, a_request: req}
 
     const extractRequest = (action) => {
       const {a_request, ...rest} = action
       return {request: a_request, action: rest}
     }
-    const getEndFn = request => request.done.bind(request)
+    const getEndFn = request => request.next.bind(request)
 
     const middleware = createRequestMiddleware({extractRequest, getEndFn})
-    middleware()(done)(action)
+    middleware()(next)(action)
 
-    assert.ok(done.calledTwice)
-    assert.ok(req.done.calledOnce)
+    assert.ok(next.calledTwice)
+    assert.ok(req.next.calledOnce)
   })
 
   it('Errors from an error callback', () => {
-    const req = {done: spy(callback => callback(new Error('failed')))}
-    const done = createMiddlewareSpy()
-    const action = {type: TYPE, a_request: req}
+    const req = {end: spy(callback => callback(new Error('failed')))}
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
-    middleware()(done)(action)
+    const middleware = createRequestMiddleware()
+    middleware()(next)(action)
 
-    assert.ok(done.calledTwice)
-    assert.ok(req.done.calledOnce)
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
   })
 
   it('Errors from an error body property', () => {
-    const req = {done: spy(callback => callback(null, {body: {error: 'failed'}}))}
-    const done = createMiddlewareSpy()
-    const action = {type: TYPE, a_request: req}
+    const req = {end: spy(callback => callback(null, {body: {error: 'failed'}}))}
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
-    middleware()(done)(action)
+    const middleware = createRequestMiddleware()
+    middleware()(next)(action)
 
-    assert.ok(done.calledTwice)
-    assert.ok(req.done.calledOnce)
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
   })
 
   it('Errors from a bad status', () => {
-    let req = {done: spy(callback => callback(null, {ok: false, body: 'some stack trace'}))}
-    let done = createMiddlewareSpy()
-    let action = {type: TYPE, a_request: req}
+    const req = {end: spy(callback => callback(null, {ok: false, body: 'some stack trace'}))}
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
 
-    let middleware = createRequestMiddleware({request_name: 'a_request', method: 'done'})
-    middleware()(done)(action)
+    let middleware = createRequestMiddleware()
+    middleware()(next)(action)
 
-    assert.ok(done.calledTwice)
-    assert.ok(req.done.calledOnce)
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
   })
 
 })

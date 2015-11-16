@@ -13,6 +13,7 @@ export function getEndFn(request) {
     end = request[method_name]
     if (isFunction(end)) return end.bind(request)
   }
+  if (isFunction(request)) return request
   return null
 }
 
@@ -28,7 +29,7 @@ const defaults = {
 }
 
 export function createRequestMiddleware(options_={}) {
-  const options = merge(defaults, options_)
+  const options = merge({}, defaults, options_)
 
   return function requestMiddleware() {
     return next => action_ => {
