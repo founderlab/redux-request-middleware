@@ -91,6 +91,22 @@ describe('requestMiddleware', () => {
     assert.ok(req.calledOnce)
   })
 
+  it('Custom parses a response', () => {
+    const req = {end: spy(callback => callback(null, {ok: true}))}
+    const next = createMiddlewareSpy()
+    const wrapper = action => {
+      if (action.type === TYPE + suffixes.SUCCESS) assert.equal(action.res.changed, 'yup')
+      next(action)
+    }
+    const action = {type: TYPE, request: req, parseResponse: res => ({changed: 'yup', ...res})}
+
+    const middleware = createRequestMiddleware()
+    middleware()(wrapper)(action)
+
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
+  })
+
   it('Calls a request then calls a callback', () => {
     const req = {end: spy(callback => callback(null, {ok: true}))}
     const next = createMiddlewareSpy()

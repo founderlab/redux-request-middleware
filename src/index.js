@@ -2,8 +2,8 @@ import merge from 'lodash/object/merge'
 import isFunction from 'lodash/lang/isFunction'
 
 export function extractRequest(action) {
-  const {request, callback, ...rest} = action
-  return {request, callback, action: rest}
+  const {request, callback, parseResponse, ...rest} = action
+  return {request, callback, parseResponse, action: rest}
 }
 
 export function getEndFn(request) {
@@ -34,7 +34,7 @@ export function createRequestMiddleware(options_={}) {
   return function requestMiddleware() {
     return next => action_ => {
 
-      const {request, callback, action} = options.extractRequest(action_)
+      const {request, callback, parseResponse, action} = options.extractRequest(action_)
       const end = options.getEndFn(request)
       if (!end) return next(action)
 
@@ -51,7 +51,10 @@ export function createRequestMiddleware(options_={}) {
           next({res, error, type: ERROR, ...rest})
         }
         else {
-          next({res, type: SUCCESS, ...rest})
+          let final_res = res
+          if (parseResponse) console.log('parseResponse', parseResponse, parseResponse(res))
+          if (parseResponse) final_res = parseResponse(res)
+          next({res: final_res, type: SUCCESS, ...rest})
         }
         if (callback) callback(error)
       })
