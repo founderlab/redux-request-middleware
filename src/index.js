@@ -52,7 +52,6 @@ export function createRequestMiddleware(options_={}) {
         }
         else {
           let success_action = {res, type: SUCCESS, ...rest}
-          if (parseResponse) console.log('parseResponse got', parseResponse(success_action))
           if (parseResponse) success_action = parseResponse(success_action)
           next(success_action)
         }
