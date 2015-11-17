@@ -51,10 +51,10 @@ export function createRequestMiddleware(options_={}) {
           next({res, error, type: ERROR, ...rest})
         }
         else {
-          let final_res = res
-          if (parseResponse) console.log('parseResponse', parseResponse, parseResponse(res))
-          if (parseResponse) final_res = parseResponse(res)
-          next({res: final_res, type: SUCCESS, ...rest})
+          let success_action = {res, type: SUCCESS, ...rest}
+          if (parseResponse) console.log('parseResponse got', parseResponse(success_action))
+          if (parseResponse) success_action = parseResponse(success_action)
+          next(success_action)
         }
         if (callback) callback(error)
       })

@@ -95,10 +95,10 @@ describe('requestMiddleware', () => {
     const req = {end: spy(callback => callback(null, {ok: true}))}
     const next = createMiddlewareSpy()
     const wrapper = action => {
-      if (action.type === TYPE + suffixes.SUCCESS) assert.equal(action.res.changed, 'yup')
+      if (action.type === TYPE + suffixes.SUCCESS) assert.equal(action.changed, 'yup')
       next(action)
     }
-    const action = {type: TYPE, request: req, parseResponse: res => ({changed: 'yup', ...res})}
+    const action = {type: TYPE, request: req, parseResponse: action => ({changed: 'yup', ...action})}
 
     const middleware = createRequestMiddleware()
     middleware()(wrapper)(action)
