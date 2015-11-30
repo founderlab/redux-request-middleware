@@ -23,3 +23,7 @@ Usage:
       type: 'GET_TASKS',
       request: Task.cursor({active: true}),
     })
+
+Changes:
+
+    0.3.0 - response_parser middleware added to parse json / models into an {id: {model}} format
