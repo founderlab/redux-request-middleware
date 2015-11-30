@@ -61,7 +61,7 @@ describe('requestMiddleware', () => {
       extractRequest: action => {
         const {req, callback, ...rest} = action
         return {request: req, callback, action: rest}
-      }
+      },
     })
     middleware()(next)(action)
     assert.ok(next.calledOnce)
@@ -69,6 +69,18 @@ describe('requestMiddleware', () => {
 
   it('Calls a request', () => {
     const req = {end: spy(callback => callback(null, {ok: true}))}
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
+
+    const middleware = createRequestMiddleware()
+    middleware()(next)(action)
+
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
+  })
+
+  it('Succeeds when res.ok isnt false', () => {
+    const req = {end: spy(callback => callback(null, {ok: undefined}))}
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
