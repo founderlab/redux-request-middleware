@@ -24,7 +24,7 @@ function createMiddlewareSpy() {
       assert.ok(action.type === TYPE + suffixes.START)
     }
     else if (next_fn.calledTwice) {
-      if (action.error || !action.res || !action.res.ok) {
+      if (action.error || !action.res || action.res.ok === false) {
         assert.ok(action.type === TYPE + suffixes.ERROR)
       }
       else {
@@ -80,7 +80,7 @@ describe('requestMiddleware', () => {
   })
 
   it('Succeeds when res.ok isnt false', () => {
-    const req = {end: spy(callback => callback(null, {ok: undefined}))}
+    const req = {end: spy(callback => callback(null, [{json: 'yep'}]))}
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
