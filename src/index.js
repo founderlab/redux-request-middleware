@@ -52,8 +52,6 @@ export function createRequestMiddleware(options_={}) {
 
       return end((err, res) => {
         const error = err || options.getError(res)
-        console.log('res is', res)
-        console.log(res.ok, res.body, res.status)
         if (error) {
           next({res, error, type: ERROR, ...rest})
         }
