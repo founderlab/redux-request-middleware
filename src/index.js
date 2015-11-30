@@ -20,7 +20,12 @@ export function getEndFn(request) {
 const defaults = {
   extractRequest,
   getEndFn,
-  getError: res => res && res.body ? res.body.error || (!res.ok ? res.body : null) : null,
+  getError: res => {
+    if (!res) return 'No response'
+    if (res.body && res.body.error) return res.body.error
+    if (!res.ok) return res.body || res.status || 'Unknown error'
+    return null
+  },
   suffixes: {
     START: '_START',
     ERROR: '_ERROR',
@@ -47,6 +52,7 @@ export function createRequestMiddleware(options_={}) {
 
       return end((err, res) => {
         const error = err || options.getError(res)
+        console.log('error?', error, res)
         if (error) {
           next({res, error, type: ERROR, ...rest})
         }

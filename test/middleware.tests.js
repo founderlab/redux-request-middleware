@@ -168,11 +168,34 @@ describe('requestMiddleware', () => {
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
-    let middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware()
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
     assert.ok(req.end.calledOnce)
   })
 
+  it('Errors from a bad status without a body', () => {
+    const req = {end: spy(callback => callback(null, {ok: false, body: null, status: 500}))}
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
+
+    const middleware = createRequestMiddleware()
+    middleware()(next)(action)
+
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
+  })
+
+  it('Errors from a bad status without a body or status', () => {
+    const req = {end: spy(callback => callback(null, {ok: false, body: null, status: null}))}
+    const next = createMiddlewareSpy()
+    const action = {type: TYPE, request: req}
+
+    const middleware = createRequestMiddleware()
+    middleware()(next)(action)
+
+    assert.ok(next.calledTwice)
+    assert.ok(req.end.calledOnce)
+  })
 })
