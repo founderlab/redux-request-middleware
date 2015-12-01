@@ -1,7 +1,9 @@
+import _ from 'lodash'
 import merge from 'lodash/object/merge'
+import isFunction from 'lodash/lang/isFunction'
 import isArray from 'lodash/lang/isArray'
 
-export function isModel(action) { return action.res && !!action.res.protype.sync }
+export function isModel(action) { return action.res && isFunction(action.res.toJSON) }
 
 export function parseModel(action) {
   const model_json = action.res ? action.res.toJSON() : {}
