@@ -26,4 +26,4 @@ Usage:
 
 Changes:
 
-    0.3.0 - response_parser middleware added to parse json / models into an {id: {model}} format
+- 0.3.0: response_parser middleware added to parse json / models into an {id: {model}} format
