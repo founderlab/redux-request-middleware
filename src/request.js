@@ -41,6 +41,7 @@ export default function createRequestMiddleware(_options={}) {
 
       const {request, callback, parseResponse, action} = options.extractRequest(_action)
       const end = options.getEndFn(request)
+
       if (!end) return next(action)
 
       const {type, ...rest} = action
@@ -49,7 +50,6 @@ export default function createRequestMiddleware(_options={}) {
       const SUCCESS = type + options.suffixes.SUCCESS
 
       next({type: START, ...rest})
-
       return end((err, res) => {
         const error = err || options.getError(res)
         if (error) {
