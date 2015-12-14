@@ -1,7 +1,7 @@
 {
   "name": "redux-request-middleware",
   "version": "0.3.0",
-  "description": "Middleware to dispatch Superagent or BackboneORM requests",
+  "description": "Redux middleware to dispatch Superagent or BackboneORM requests",
   "main": "lib/index.js",
   "author": {
     "name": "Gwilym Humphreys",
