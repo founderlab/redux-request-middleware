@@ -4,25 +4,27 @@ Works like redux promise middleware. Resolves request objects from superagent or
 
 #####Usage:
 
-    // Superagent
+```javascript
+// Superagent
 
-    import request from superagent
+import request from superagent
 
-    dispatch({
-      type: 'GET_SOMETHING',
-      request: request.get('/something'),
-      callback: (err) => console.log('This will be called when the request completes. Useful for navigating after a request returns (login, etc). Errors should not be handled here - an error action is sent, work with that.'),
-    })
+dispatch({
+  type: 'GET_SOMETHING',
+  request: request.get('/something'),
+  callback: (err) => console.log('This will be called when the request completes. Useful for navigating after a request returns (login, etc). Errors should not be handled here - an error action is sent, work with that.'),
+})
 
 
-    // BackboneORM
+// BackboneORM
 
-    import Task from './models/task'
+import Task from './models/task'
 
-    dispatch({
-      type: 'GET_TASKS',
-      request: Task.cursor({active: true}),
-    })
+dispatch({
+  type: 'GET_TASKS',
+  request: Task.cursor({active: true}),
+})
+```
 
 #####Changes:
 
