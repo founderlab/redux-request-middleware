@@ -6,7 +6,6 @@ Works like redux promise middleware. Resolves request objects from superagent or
 
 ```javascript
 // Superagent
-
 import request from superagent
 
 dispatch({
@@ -17,7 +16,6 @@ dispatch({
 
 
 // BackboneORM
-
 import Task from './models/task'
 
 dispatch({
