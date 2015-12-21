@@ -2,7 +2,7 @@
 
 Works like redux promise middleware. Resolves request objects from superagent or BackboneORM models. Can work with anything with a similar callback style api.
 
-#####Usage:
+##### Usage:
 
 ```javascript
 // Superagent
@@ -24,6 +24,6 @@ dispatch({
 })
 ```
 
-#####Changes:
+##### Changes:
 
 - 0.3.0: response_parser middleware added to parse json / models into an {id: {model}} format
