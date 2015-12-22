@@ -6,9 +6,9 @@ import isArray from 'lodash/lang/isArray'
 export function isModel(action) { return action.res && isFunction(action.res.toJSON) }
 
 export function parseModel(action) {
-  const model_json = action.res ? action.res.toJSON() : {}
-  const by_id = model_json.id ? {[model_json.id]: model_json} : {}
-  return {by_id, ...action}
+  const model = action.res ? action.res.toJSON() : {}
+  const by_id = model.id ? {[model.id]: model} : {}
+  return {by_id, model, models: [model], ...action}
 }
 
 export function parseJSON(action) {
@@ -16,7 +16,7 @@ export function parseJSON(action) {
   if (!isArray(models)) models = [models]
   const by_id = {}
   _.forEach(models, model => by_id[model.id] = model)
-  return {by_id, ...action}
+  return {by_id, models, ...action}
 }
 
 const defaults = {
