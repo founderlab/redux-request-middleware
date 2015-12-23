@@ -18,7 +18,7 @@ export function parseJSON(action) {
   const ids = []
   _.forEach(models, model => {
     by_id[model.id] = model
-    ids.push(id)
+    ids.push(model.id)
   })
   return {by_id, models, ids, ...action}
 }
