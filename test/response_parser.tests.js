@@ -5,9 +5,11 @@ import {createResponseParserMiddleware} from '../src'
 
 function createJSONSpy(input) {
   return spy(action => {
-    let input_list = _.isArray(input) ? input : [input]
+    const input_list = _.isArray(input) ? input : [input]
     _.forEach(input_list, model_json => {
       expect(action.by_id[model_json.id]).toEqual(model_json)
+      expect(action.models).toInclude(model_json)
+      expect(action.ids).toInclude(model_json.id)
     })
   })
 }
@@ -42,13 +44,16 @@ describe('responseParserMiddleware', () => {
 
   it('Parses a list of json', () => {
     const action = {
-      res: [{
-        id: 'model1id',
-        name: 'model1',
-      },{
-        id: 'model22222id',
-        name: 'model22222',
-      }],
+      res: [
+        {
+          id: 'model1id',
+          name: 'model1',
+        },
+        {
+          id: 'model22222id',
+          name: 'model22222',
+        },
+      ],
     }
     const next = createJSONSpy(action.res)
     const middleware = createResponseParserMiddleware()
