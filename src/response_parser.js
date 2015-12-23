@@ -8,15 +8,19 @@ export function isModel(action) { return action.res && isFunction(action.res.toJ
 export function parseModel(action) {
   const model = action.res ? action.res.toJSON() : {}
   const by_id = model.id ? {[model.id]: model} : {}
-  return {by_id, model, models: [model], ...action}
+  return {by_id, model, models: [model], ids: [model.id], ...action}
 }
 
 export function parseJSON(action) {
   let models = action.res ? action.res.body || action.res : []
   if (!isArray(models)) models = [models]
   const by_id = {}
-  _.forEach(models, model => by_id[model.id] = model)
-  return {by_id, models, ...action}
+  const ids = []
+  _.forEach(models, model => {
+    by_id[model.id] = model
+    ids.push(id)
+  })
+  return {by_id, models, ids, ...action}
 }
 
 const defaults = {
