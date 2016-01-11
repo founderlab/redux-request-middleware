@@ -9,8 +9,8 @@
   },
   "license": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/founderlab/redux-request-middleware"
+    "type": "git",
+    "url": "https://github.com/founderlab/redux-request-middleware"
   },
   "scripts": {
     "prepublish": "rm -rf ./lib && babel ./src --ignore '/node_modules/' --out-dir ./lib",
@@ -19,6 +19,7 @@
     "test": "eval $(cat test/.env) mocha test/**/*.tests.js"
   },
   "dependencies": {
+    "babel-runtime": "^5.8.34",
     "lodash": "^3.10.1"
   },
   "devDependencies": {
