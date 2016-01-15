@@ -1,9 +1,6 @@
 import _ from 'lodash'
-import merge from 'lodash/object/merge'
-import isFunction from 'lodash/lang/isFunction'
-import isArray from 'lodash/lang/isArray'
 
-export function isModel(action) { return action.res && isFunction(action.res.toJSON) }
+export function isModel(action) { return action.res && _.isFunction(action.res.toJSON) }
 
 export function parseModel(action) {
   const model = action.res ? action.res.toJSON() : {}
@@ -13,7 +10,7 @@ export function parseModel(action) {
 
 export function parseJSON(action) {
   let models = action.res ? action.res.body || action.res : []
-  if (!isArray(models)) models = [models]
+  if (!_.isArray(models)) models = [models]
   const by_id = {}
   const ids = []
   _.forEach(models, model => {
@@ -30,7 +27,7 @@ const defaults = {
 }
 
 export default function createResponseParserMiddleware(_options={}) {
-  const options = merge({}, defaults, _options)
+  const options = _.merge({}, defaults, _options)
 
   return function responseParserMiddleware() {
     return next => action => {

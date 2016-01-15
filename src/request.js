@@ -1,5 +1,4 @@
-import merge from 'lodash/object/merge'
-import isFunction from 'lodash/lang/isFunction'
+import _ from 'lodash'
 
 export function extractRequest(action) {
   const {request, callback, parseResponse, ...rest} = action
@@ -11,9 +10,9 @@ export function getEndFn(request) {
   let end
   for (const method_name of ['toJSON', 'end']) {
     end = request[method_name]
-    if (isFunction(end)) return end.bind(request)
+    if (_.isFunction(end)) return end.bind(request)
   }
-  if (isFunction(request)) return request
+  if (_.isFunction(request)) return request
   return null
 }
 
@@ -34,7 +33,7 @@ const defaults = {
 }
 
 export default function createRequestMiddleware(_options={}) {
-  const options = merge({}, defaults, _options)
+  const options = _.merge({}, defaults, _options)
 
   return function requestMiddleware() {
     return next => _action => {
