@@ -26,5 +26,6 @@ dispatch({
 
 ##### Changes:
 
-- 0.3.2: response_parser also adds the models as a list. Format is {by_id: {model_map}, models: [model_list]}
+- 0.4.3: Fixed up error handling a bit
+- 0.4.2: response_parser also adds the models as a list. Format is {by_id: {model_map}, models: [model_list]}
 - 0.3.0: response_parser middleware added to parse json / models into an {id: {model}} format
