@@ -21,6 +21,7 @@ const defaults = {
   getEndFn,
   getError: res => {
     if (_.isUndefined(res)) return '[redux-request-middleware] No response received'
+    if (!res) return null
     if (res.body && res.body.error) return res.body.error
     if (res.ok === false) return res.body || res.status || '[redux-request-middleware] Unknown error: res.ok was false'
     return null
@@ -50,6 +51,7 @@ export default function createRequestMiddleware(_options={}) {
 
       next({type: START, ...rest})
       return end((err, res) => {
+        console.log("ended", err, res, action)
         const error = err || options.getError(res)
         if (error) {
           next({res, error, type: ERROR, ...rest})
