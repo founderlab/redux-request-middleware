@@ -14,6 +14,8 @@ export function parseJSON(action) {
   const by_id = {}
   const ids = []
   _.forEach(models, model => {
+    if (_.isNil(model.id)) return
+    model.id = model.id.toString()
     by_id[model.id] = model
     ids.push(model.id)
   })

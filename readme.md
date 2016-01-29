@@ -26,6 +26,7 @@ dispatch({
 
 ##### Changes:
 
+- 0.4.6: responseParser always parses ids to strings by default
 - 0.4.5: Behave correctly when res is null (not undefined) with no error
 - 0.4.3: Fixed up error handling a bit
 - 0.4.2: response_parser also adds the models as a list. Format is {by_id: {model_map}, models: [model_list]}
