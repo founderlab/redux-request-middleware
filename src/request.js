@@ -20,7 +20,7 @@ const defaults = {
   extractRequest,
   getEndFn,
   getError: res => {
-    if (_.isNil(res)) return '[redux-request-middleware] No response received'
+    if (_.isUndefined(res)) return '[redux-request-middleware] No response received'
     if (!res) return null
     if (res.body && res.body.error) return res.body.error
     if (res.ok === false) return res.body || res.status || '[redux-request-middleware] Unknown error: res.ok was false'
