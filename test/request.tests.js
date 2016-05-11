@@ -56,7 +56,7 @@ describe('requestMiddleware', () => {
 
   it('Passes through an action with a custom extractRequest method that isnt a function', () => {
     const next = createSpy()
-    const action = {type: TYPE, req: 'lol', request: function() {} }
+    const action = {type: TYPE, req: 'lol', request: (function() {}) }
     const middleware = createRequestMiddleware({
       extractRequest: action => {
         const {req, callback, ...rest} = action

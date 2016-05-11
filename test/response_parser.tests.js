@@ -5,18 +5,18 @@ import {createResponseParserMiddleware} from '../src'
 
 function createJSONSpy(input) {
   return spy(action => {
-    const input_list = _.isArray(input) ? input : [input]
-    _.forEach(input_list, model_json => {
-      expect(action.by_id[model_json.id]).toEqual(model_json)
-      expect(action.models).toInclude(model_json)
-      expect(action.ids).toInclude(model_json.id)
+    const inputList = _.isArray(input) ? input : [input]
+    _.forEach(inputList, modelJson => {
+      expect(action.models[modelJson.id]).toEqual(modelJson)
+      expect(action.models).toInclude(modelJson)
+      expect(action.ids).toInclude(modelJson.id)
     })
   })
 }
 
 function createModelSpy(model) {
   return spy(action => {
-    expect(action.by_id[model.attributes.id]).toEqual(model.attributes)
+    expect(action.models[model.attributes.id]).toEqual(model.attributes)
   })
 }
 

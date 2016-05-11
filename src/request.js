@@ -8,8 +8,8 @@ export function extractRequest(action) {
 export function getEndFn(request) {
   if (!request) return null
   let end
-  for (const method_name of ['toJSON', 'end']) {
-    end = request[method_name]
+  for (const methodName of ['toJSON', 'end']) {
+    end = request[methodName]
     if (_.isFunction(end)) return end.bind(request)
   }
   if (_.isFunction(request)) return request

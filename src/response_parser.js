@@ -3,19 +3,19 @@ import _ from 'lodash'
 export function isModel(action) { return action.res && _.isFunction(action.res.toJSON) }
 
 export function parseJSON(action) {
-  let models = action.res ? action.res.body || action.res : null
-  if (!_.isArray(models)) models = [models]
-  const model = models[0]
+  let modelList = action.res ? action.res.body || action.res : null
+  if (!_.isArray(modelList)) modelList = [modelList]
+  const model = modelList[0]
   const status = (action.res && action.res.status) || (model ? 200 : 404)
-  const by_id = {}
+  const models = {}
   const ids = []
-  _.forEach(models, model => {
+  _.forEach(modelList, model => {
     if (_.isNil(model && model.id)) return
     model.id = model.id.toString()
-    by_id[model.id] = model
+    models[model.id] = model
     ids.push(model.id)
   })
-  return {by_id, model, models, ids, status, ...action}
+  return {model, models, modelList, ids, status, ...action}
 }
 
 export function parseModel(action) {
