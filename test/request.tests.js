@@ -17,13 +17,13 @@ function createSpy() {
 }
 
 function createMiddlewareSpy() {
-  const next_fn = spy(action => {
+  const nextFn = spy(action => {
     assert.ok(action)
 
-    if (next_fn.calledOnce) {
+    if (nextFn.calledOnce) {
       assert.ok(action.type === TYPE + suffixes.START)
     }
-    else if (next_fn.calledTwice) {
+    else if (nextFn.calledTwice) {
       if (action.error || !action.res || action.res.ok === false) {
         assert.ok(action.type === TYPE + suffixes.ERROR)
       }
@@ -33,7 +33,7 @@ function createMiddlewareSpy() {
       }
     }
   })
-  return next_fn
+  return nextFn
 }
 
 describe('requestMiddleware', () => {
@@ -56,7 +56,7 @@ describe('requestMiddleware', () => {
 
   it('Passes through an action with a custom extractRequest method that isnt a function', () => {
     const next = createSpy()
-    const action = {type: TYPE, req: 'lol', request: (function() {}) }
+    const action = {type: TYPE, req: 'lol', request: () => {}}
     const middleware = createRequestMiddleware({
       extractRequest: action => {
         const {req, callback, ...rest} = action
@@ -136,11 +136,11 @@ describe('requestMiddleware', () => {
   it('Calls a request with config', () => {
     const req = {next: spy(callback => callback(null, {ok: true}))}
     const next = createMiddlewareSpy()
-    const action = {type: TYPE, a_request: req}
+    const action = {type: TYPE, aRequest: req}
 
     const extractRequest = (action) => {
-      const {a_request, ...rest} = action
-      return {request: a_request, action: rest}
+      const {aRequest, ...rest} = action
+      return {request: aRequest, action: rest}
     }
     const getEndFn = request => request.next.bind(request)
 

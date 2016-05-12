@@ -52,16 +52,16 @@ export default function createRequestMiddleware(_options={}) {
       next({type: START, ...rest})
       return end((err, res) => {
         const error = err || options.getError(res)
-        let final_action = {}
+        let finalAction = {}
         if (error) {
-          final_action = {res, error, type: ERROR, ...rest}
+          finalAction = {res, error, type: ERROR, ...rest}
         }
         else {
-          final_action = {res, type: SUCCESS, ...rest}
-          if (parseResponse) final_action = parseResponse(final_action)
+          finalAction = {res, type: SUCCESS, ...rest}
+          if (parseResponse) finalAction = parseResponse(finalAction)
         }
-        next(final_action)
-        if (callback) callback(error, final_action)
+        next(finalAction)
+        if (callback) callback(error, finalAction)
       })
     }
   }

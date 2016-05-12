@@ -1,5 +1,5 @@
 import createRequestMiddleware from './request'
-import createResponseParserMiddleware from './response_parser'
+import createResponseParserMiddleware from './responseParser'
 
 export {createRequestMiddleware, createResponseParserMiddleware}
 export const requestMiddleware = createRequestMiddleware()

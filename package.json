@@ -19,7 +19,6 @@
     "test": "eval $(cat test/.env) mocha test/**/*.tests.js"
   },
   "dependencies": {
-    "babel-runtime": "^5.8.34",
     "lodash": "^4.0.0"
   },
   "devDependencies": {
