@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 
+## [0.11.3]
+ - Back to Babel 5
+
 ## [0.11.0]
  - Migrated to Babel 6
 
