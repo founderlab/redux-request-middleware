@@ -5,6 +5,9 @@
 ## [0.12.0]
   - Added requestLoggerMiddleware to help with react-native debugging (moved here from fl-react-utils).
 
+## [0.11.3]
+ - Back to Babel 5.
+
 ## [0.11.0]
   - Migrated to Babel 6.
 
