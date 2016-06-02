@@ -8,7 +8,6 @@ function createJSONSpy(input) {
     const inputList = _.isArray(input) ? input : [input]
     _.forEach(inputList, modelJson => {
       expect(action.models[modelJson.id]).toEqual(modelJson)
-      expect(action.models).toInclude(modelJson)
       expect(action.ids).toInclude(modelJson.id)
     })
   })
