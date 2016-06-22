@@ -2,7 +2,7 @@
 ## [Unreleased]
 
 
-## [0.12.1]
+## [0.12.2]
   - Added requestModifierMiddleware to allow altering requests before they're sent (moved here from fl-react-utils).
 
 ## [0.12.0]
