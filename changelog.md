@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 
+## [0.12.1]
+  - Added requestModifierMiddleware to allow altering requests before they're sent (moved here from fl-react-utils).
+
 ## [0.12.0]
   - Added requestLoggerMiddleware to help with react-native debugging (moved here from fl-react-utils).
 
