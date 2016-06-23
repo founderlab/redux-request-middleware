@@ -7,4 +7,3 @@ export {createRequestMiddleware, createResponseParserMiddleware, createRequestLo
 export const requestMiddleware = createRequestMiddleware()
 export const responseParserMiddleware = createResponseParserMiddleware()
 export const requestLoggerMiddleware = createRequestLoggerMiddleware()
-export const requestModifierMiddleware = createRequestModifierMiddleware()

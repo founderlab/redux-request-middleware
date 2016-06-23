@@ -17,7 +17,7 @@ const defaults = {
 
 export default function createRequestModifierMiddleware(_options={}) {
   const options = _.merge(defaults, _options)
-  if (!options.getValue) return console.error('[fl-react-utils] createQueryMiddleware requires a getValue option')
+  if (!options.getValue) return console.error('[redux-request-middleware] createRequestModifierMiddleware requires a getValue option')
 
   return function requestModifierMiddleware(store) {
     return next => action => {
