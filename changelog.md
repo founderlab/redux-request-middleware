@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 
+## [0.12.3]
+  - Added logging of errors.
+
 ## [0.12.2]
   - Added requestModifierMiddleware to allow altering requests before they're sent (moved here from fl-react-utils).
 
