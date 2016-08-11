@@ -6,7 +6,7 @@ const defaults = {
   getResponse: action => action.res,
   logResponse: response => console.log('[response]', response),
   getError: action => action.error,
-  logError: response => console.log('[error]', error),
+  logError: error => console.log('[error]', error),
 }
 
 export default function createRequestLoggerMiddleware(_options={}) {

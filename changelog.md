@@ -2,7 +2,7 @@
 ## [Unreleased]
 
 
-## [0.12.3]
+## [0.12.6]
   - Added logging of errors.
 
 ## [0.12.2]
