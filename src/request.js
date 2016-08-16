@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import retry from 'retry-unless'
 
 export function extractRequest(action) {
   const {request, callback, parseResponse, ...rest} = action
@@ -31,6 +32,11 @@ const defaults = {
     ERROR: '_ERROR',
     SUCCESS: '_SUCCESS',
   },
+  retry: {
+    times: 20,
+    interval: retryCount => Math.min(50 * Math.pow(2, retryCount), 1000),
+  },
+  check: (err, count) => false, // eslint-disable-line
 }
 
 export default function createRequestMiddleware(_options={}) {
@@ -50,7 +56,8 @@ export default function createRequestMiddleware(_options={}) {
       const SUCCESS = type + options.suffixes.SUCCESS
 
       next({type: START, ...rest})
-      return end((err, res) => {
+
+      const done = (err, res) => {
         const error = err || options.getError(res)
         let finalAction = {}
         if (error) {
@@ -62,7 +69,13 @@ export default function createRequestMiddleware(_options={}) {
         }
         next(finalAction)
         if (callback) callback(error, finalAction)
-      })
+      }
+
+      if (options.retry) {
+        return retry(options.retry, end, options.check, done)
+      }
+
+      return end(done)
     }
   }
 }

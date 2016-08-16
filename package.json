@@ -20,7 +20,8 @@
     "cover": "eval $(cat test/.env) istanbul cover _mocha -- test/**/*.tests.js"
   },
   "dependencies": {
-    "lodash": "^4.13.1"
+    "lodash": "^4.13.1",
+    "retry-unless": "^1.0.0"
   },
   "devDependencies": {
     "babel": "^5.8.38",

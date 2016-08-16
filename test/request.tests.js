@@ -41,7 +41,7 @@ describe('requestMiddleware', () => {
   it('Passes through an action without a request', () => {
     const next = createSpy()
     const action = {type: TYPE}
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
     assert.ok(next.calledOnce)
   })
@@ -49,7 +49,7 @@ describe('requestMiddleware', () => {
   it('Passes through an action with a request field that isnt a function', () => {
     const next = createSpy()
     const action = {type: TYPE, request: 'lol'}
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
     assert.ok(next.calledOnce)
   })
@@ -62,6 +62,7 @@ describe('requestMiddleware', () => {
         const {req, callback, ...rest} = action
         return {request: req, callback, action: rest}
       },
+      retry: false,
     })
     middleware()(next)(action)
     assert.ok(next.calledOnce)
@@ -72,11 +73,27 @@ describe('requestMiddleware', () => {
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
     assert.ok(req.end.calledOnce)
+  })
+
+  it('Calls a request with retries', () => {
+    const times = 4
+    let called = 0
+    const req = {end: spy(callback => called++ < times-2 ? callback('Err') : callback(null, {ok: true}))}
+    const next = createMiddlewareSpy()
+
+    const action = {type: TYPE, request: req, callback: err => {
+      assert.ok(!err)
+      assert.ok(next.calledTwice)
+      assert.equal(req.end.callCount, times-2)
+    }}
+
+    const middleware = createRequestMiddleware({retry: {times}})
+    middleware()(next)(action)
   })
 
   it('Succeeds when res.ok isnt false', () => {
@@ -84,7 +101,7 @@ describe('requestMiddleware', () => {
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
@@ -96,7 +113,7 @@ describe('requestMiddleware', () => {
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
@@ -112,7 +129,7 @@ describe('requestMiddleware', () => {
     }
     const action = {type: TYPE, request: req, parseResponse: action => ({changed: 'yup', ...action})}
 
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(wrapper)(action)
 
     assert.ok(next.calledTwice)
@@ -125,7 +142,7 @@ describe('requestMiddleware', () => {
     const callback = spy(err => {assert.ok(!err)})
     const action = {callback, type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
@@ -144,7 +161,7 @@ describe('requestMiddleware', () => {
     }
     const getEndFn = request => request.next.bind(request)
 
-    const middleware = createRequestMiddleware({extractRequest, getEndFn})
+    const middleware = createRequestMiddleware({extractRequest, getEndFn, retry: false})
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
@@ -156,11 +173,26 @@ describe('requestMiddleware', () => {
     const next = createMiddlewareSpy()
     const action = {type: TYPE, request: req}
 
-    const middleware = createRequestMiddleware()
+    const middleware = createRequestMiddleware({retry: false})
     middleware()(next)(action)
 
     assert.ok(next.calledTwice)
     assert.ok(req.end.calledOnce)
+  })
+
+  it('Errors from an error callback after retries', () => {
+    const times = 4
+    const req = {end: spy(callback => callback(new Error('failed')))}
+    const next = createMiddlewareSpy()
+
+    const action = {type: TYPE, request: req, callback: err => {
+      assert.ok(err)
+      assert.ok(next.calledTwice)
+      assert.equal(req.end.callCount, times-1)
+    }}
+
+    const middleware = createRequestMiddleware({retry: {times, interval: 1}})
+    middleware()(next)(action)
   })
 
   it('Errors from an error body property', () => {

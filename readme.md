@@ -2,7 +2,24 @@
 
 Works like redux promise middleware. Resolves request objects from superagent or BackboneORM models. Can work with anything with a similar callback style api.
 
-##### Usage:
+requestMiddleware, responseParserMiddleware
+-------------------------------------------
+
+##### Usage
+
+1. Add to your middleware
+```javascript
+import {createStore, applyMiddleware} from 'redux'
+import {requestMiddleware, responseParserMiddleware} from 'redux-request-middleware'
+import rootReducer from './reducers'
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(requestMiddleware, responseParserMiddleware),
+)
+```
+
+2. Add a `request` property to your actions that contains the request you want to dispatch
 
 ```javascript
 // Superagent
@@ -44,41 +61,40 @@ It's designed to work alongside redux-request-middleware which will perform the 
 It must be included *before* redux-request-middleware when combining middleware, otherwise the requests will be sent before it has a chance to alter the query.
 
 
-- options:
-  --------
-    getValue(store):              A function that takes a store and returns a value object to append to the request. You need to supply this.
+#### Options
 
-    getRequest(action):           Return a request from an action, defaults to returning action.request
+ - getValue(store):              A function that takes a store and returns a value object to append to the request. You need to supply this.
 
-    setValue(request, value):     A function that appends `value` to the request somehow. By default it's this:
+ - getRequest(action):           Return a request from an action, defaults to returning action.request
 
-      ```javascript
-      export function setValue(request, value) {
-        if (_.isObject(request._cursor)) {
-          _.merge(request._cursor, value)
-        }
-        if (_.isFunction(request.query)) {
-          request.query(value)
-        }
-        return request
-      }
-      ```
+ - setValue(request, value):     A function that appends `value` to the request somehow. By default it's this:
+
+```javascript
+export function setValue(request, value) {
+  if (_.isObject(request._cursor)) {
+    _.merge(request._cursor, value)
+  }
+  if (_.isFunction(request.query)) {
+    request.query(value)
+  }
+  return request
+}
+```
 
 
-- Usage
-  ----- 
+##### Usage
 
-  This example creates middleware that adds a $user_id param with the current user's id to requests
+This example creates middleware that adds a $user_id param with the current user's id to requests
 
-  ```javascript
-  const requestModifierMiddleware = createRequestModifierMiddleware({
-    getValue: store => {
-      const {auth} = store.getState()
-      const value = {}
-      if (auth.get('user')) value.$user_id = auth.get('user').get('id')
-      return value
-    },
-  })
-  ```
+```javascript
+const requestModifierMiddleware = createRequestModifierMiddleware({
+  getValue: store => {
+    const {auth} = store.getState()
+    const value = {}
+    if (auth.get('user')) value.$user_id = auth.get('user').get('id')
+    return value
+  },
+})
+```
 
-  i.e. if you have a user with id `1234`, all modified requests will now look like `/api/some_model/?$user_id=1234`
+i.e. if you have a user with id `1234`, all modified requests will now look like `/api/some_model/?$user_id=1234`
