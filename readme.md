@@ -98,3 +98,9 @@ const requestModifierMiddleware = createRequestModifierMiddleware({
 ```
 
 i.e. if you have a user with id `1234`, all modified requests will now look like `/api/some_model/?$user_id=1234`
+
+
+requestLoggerMiddleware
+-----------------------
+Auto logs all requests to the console.
+Add to your redux middleware to have each request logged (useful for react-native debugging).
