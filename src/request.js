@@ -36,7 +36,22 @@ const defaults = {
     times: 20,
     interval: retryCount => Math.min(50 * Math.pow(2, retryCount), 1000),
   },
-  check: (err, count) => false, // eslint-disable-line
+  check: (err, count) => {
+    const status = err.status
+    if (status && status.toString()[0] === 4 || status === 500) return true
+    if (err.toString().match(/status (4|500)/)) return true
+    return false
+  }
+}
+
+// Wrap the end function to place the error status code on it
+const wrapEnd = endFn => callback => {
+  endFn((err, res, idk, smth) => {
+    if (err && res) {
+      err.status = res.status
+    }
+    callback(err, res)
+  })
 }
 
 export default function createRequestMiddleware(_options={}) {
@@ -72,7 +87,7 @@ export default function createRequestMiddleware(_options={}) {
       }
 
       if (options.retry) {
-        return retry(options.retry, end, options.check, done)
+        return retry(options.retry, wrapEnd(end), options.check, done)
       }
 
       return end(done)
