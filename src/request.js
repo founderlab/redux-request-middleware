@@ -38,10 +38,10 @@ const defaults = {
   },
   check: (err, count) => {
     const status = err.status
-    if (status && status.toString()[0] === 4 || status === 500) return true
+    if (status && status.toString()[0] === '4' || status === 500) return true
     if (err.toString().match(/status (4|500)/)) return true
     return false
-  }
+  },
 }
 
 // Wrap the end function to place the error status code on it if not present
