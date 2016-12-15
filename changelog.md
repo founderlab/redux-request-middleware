@@ -1,6 +1,9 @@
 
 ## [Unreleased]
-
+ 
+## [0.13.5]
+  - Bug fixes
+  - Fix retry check for status 4XX
 
 ## [0.13.0]
   - Added a retry option to request middleware. On by default, see readme.
