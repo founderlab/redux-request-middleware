@@ -44,10 +44,10 @@ const defaults = {
   },
 }
 
-// Wrap the end function to place the error status code on it
+// Wrap the end function to place the error status code on it if not present
 const wrapEnd = endFn => callback => {
   endFn((err, res) => {
-    if (err && res) {
+    if (err && res && !err.status) {
       err.status = res.status
     }
     callback(err, res)
