@@ -20,7 +20,18 @@ export function getEndFn(request) {
 const defaults = {
   extractRequest,
   getEndFn,
-  getError: res => {
+  getError: (err, res) => {
+    if (err) {
+      if (err.text) {
+        let json
+        try {
+          json = JSON.parse(err.text)
+        }
+        catch (e) { }
+        if (json && json.error) return json.error
+      }
+      return err
+    }
     if (_.isUndefined(res)) return '[redux-request-middleware] No response received'
     if (!res) return null
     if (res.body && res.body.error) return res.body.error
@@ -73,7 +84,7 @@ export default function createRequestMiddleware(_options={}) {
       next({type: START, ...rest})
 
       const done = (err, res) => {
-        const error = err || options.getError(res)
+        const error = options.getError(err, res)
         let finalAction = {}
         if (error) {
           finalAction = {res, error, type: ERROR, ...rest}
