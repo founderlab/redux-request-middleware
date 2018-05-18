@@ -1,4 +1,4 @@
-## This repo has moved to the [Frameworkstein repository](https://github.com/founderlab/frameworkstein/redux-request-middleware)
+## This package has moved to the [Frameworkstein repository](https://github.com/founderlab/frameworkstein/tree/master/packages/redux-request-middleware)
 
 
 
