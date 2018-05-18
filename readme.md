@@ -1,3 +1,7 @@
+## This repo has moved to the [Frameworkstein repository](https://github.com/founderlab/frameworkstein/redux-request-middleware)
+
+
+
 # Request middleware for Redux
 
 Works like redux promise middleware. Resolves request objects from superagent or BackboneORM models. Can work with anything with a similar callback style api.
